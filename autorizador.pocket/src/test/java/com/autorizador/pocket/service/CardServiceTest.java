@@ -1,5 +1,6 @@
 package com.autorizador.pocket.service;
 
+import com.autorizador.pocket.exception.CardNotFoundException;
 import com.autorizador.pocket.mapper.CardMapper;
 import com.autorizador.pocket.model.Card;
 import com.autorizador.pocket.repository.CardRepository;
@@ -14,6 +15,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +37,7 @@ class CardServiceTest {
     @DisplayName("Should create new card and return 201 status")
     void shouldCreateNewCard() {
         var request = mockRequest();
-        when(repository.findById(anyString())).thenReturn(Optional.empty());
+        when(repository.findByCardNumber(anyString())).thenReturn(Optional.empty());
 
         var cardResponseResponseEntity = service.create(request);
 
@@ -48,7 +50,7 @@ class CardServiceTest {
     void shouldNotCreateNewCard() {
         var request = mockRequest();
         var card = new Card();
-        when(repository.findById(anyString())).thenReturn(Optional.of(card));
+        when(repository.findByCardNumber(anyString())).thenReturn(Optional.of(card));
 
         var cardResponseResponseEntity = service.create(request);
 
@@ -56,12 +58,37 @@ class CardServiceTest {
         assertEquals(cardResponseResponseEntity.getStatusCode(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
-    CardRequest mockRequest(){
+    @Test
+    @DisplayName("Should return card balance")
+    void shouldReturnCardBalance() {
+        var card = mockCardModel();
+        when(repository.findByCardNumber(anyString())).thenReturn(Optional.of(card));
+
+        var balance = service.getCardBalance(card.getCardNumber());
+
+        assertEquals(balance,BigDecimal.valueOf(340.90));
+    }
+
+    @Test
+    @DisplayName("Should not return card balance")
+    void shouldNotReturnCardBalance() {
+        when(repository.findByCardNumber(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(CardNotFoundException.class, () -> service.getCardBalance("1234567890"));
+    }
+
+    private CardRequest mockRequest(){
         return CardRequest.builder()
             .cardNumber("1234567890")
             .cpf("78931227899")
             .password("1234")
             .name("Meryl Streep")
             .build();
+    }
+
+    private Card mockCardModel(){
+        var card = mapper.requestToModel(mockRequest());
+        card.setBalance(BigDecimal.valueOf(340.90));
+        return card;
     }
 }

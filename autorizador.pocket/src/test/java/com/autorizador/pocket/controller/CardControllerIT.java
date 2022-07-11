@@ -17,9 +17,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -34,19 +34,14 @@ class CardControllerIT {
     private CardService service;
 
     @AfterEach
-    private void init(){
+    private void afterEach() {
         repository.deleteAll();
     }
 
     @Test
     @DisplayName("Should create a new card")
     void createCardWithSucces() throws Exception {
-        var request  = CardRequest.builder()
-            .cardNumber("1234567890")
-            .cpf("78931227899")
-            .password("1234")
-            .name("Meryl Streep")
-            .build();
+        var request = mockRequest();
 
         this.mockMvc.perform(post("/cartoes/")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -63,19 +58,44 @@ class CardControllerIT {
     @Test
     @DisplayName("Should not create a duplicated card")
     void notCreateDuplicatedCard() throws Exception {
-        var request  = CardRequest.builder()
+        initCardData();
+
+        this.mockMvc.perform(post("/cartoes/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(cardRequestAsJsonString(mockRequest())))
+            .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @DisplayName("Should return card balance")
+    void returnCardBalanceWithSuccess() throws Exception {
+        initCardData();
+
+        this.mockMvc.perform(get("/cartoes/1234567890"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("500"));
+    }
+
+    @Test
+    @DisplayName("Should not return card balance")
+    void notReturnCardBalanceWithSuccess() throws Exception {
+        this.mockMvc.perform(get("/cartoes/1234567890"))
+            .andExpect(status().isNotFound());
+    }
+
+    private void initCardData() {
+        var request = mockRequest();
+
+        service.create(request);
+    }
+
+    private CardRequest mockRequest() {
+        return CardRequest.builder()
             .cardNumber("1234567890")
             .cpf("78931227899")
             .password("1234")
             .name("Meryl Streep")
             .build();
-
-        service.create(request);
-
-        this.mockMvc.perform(post("/cartoes/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(cardRequestAsJsonString(request)))
-            .andExpect(status().isUnprocessableEntity());
     }
 
     private static String cardRequestAsJsonString(CardRequest request) throws JsonProcessingException {

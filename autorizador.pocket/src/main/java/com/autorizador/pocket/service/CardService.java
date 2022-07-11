@@ -1,5 +1,6 @@
 package com.autorizador.pocket.service;
 
+import com.autorizador.pocket.exception.CardNotFoundException;
 import com.autorizador.pocket.mapper.CardMapper;
 import com.autorizador.pocket.model.Card;
 import com.autorizador.pocket.repository.CardRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,17 @@ public class CardService {
         return repository.findByCardNumber(request.getCardNumber())
             .map(card -> ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(mapper.modelToResponse(card)))
             .orElseGet(() -> ResponseEntity.status(HttpStatus.CREATED).body(initCard(request)));
+    }
+
+    public BigDecimal getCardBalance(String cardNumber){
+        return repository.findByCardNumber(cardNumber)
+            .map(Card::getBalance)
+            .orElseThrow(CardNotFoundException::new);
+    }
+
+    public void authorizeCardTransaction(String cardNumber, String password, BigDecimal value){
+        repository.findByCardNumber(cardNumber)
+            .orElseThrow(() ->)
     }
 
     public List<CardResponse> getAllCards() {

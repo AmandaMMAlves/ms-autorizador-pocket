@@ -4,9 +4,11 @@ import com.autorizador.pocket.request.CardRequest;
 import com.autorizador.pocket.response.CardResponse;
 import com.autorizador.pocket.service.CardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -18,6 +20,12 @@ public class CardController {
     @PostMapping
     public ResponseEntity<CardResponse> createCard(@RequestBody CardRequest cardRequest){
         return service.create(cardRequest);
+    }
+
+    @GetMapping("/{numeroCartao}")
+    @ResponseBody
+    public BigDecimal getCardBalance(@PathVariable("numeroCartao") String cardNumber){
+        return service.getCardBalance(cardNumber);
     }
 
     @GetMapping

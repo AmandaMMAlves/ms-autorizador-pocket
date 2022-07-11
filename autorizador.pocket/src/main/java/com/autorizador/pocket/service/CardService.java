@@ -1,11 +1,17 @@
 package com.autorizador.pocket.service;
 
 import com.autorizador.pocket.exception.CardNotFoundException;
+import com.autorizador.pocket.exception.CardTransactionException;
+import com.autorizador.pocket.exception.CardTransactionValidatorEnum;
 import com.autorizador.pocket.mapper.CardMapper;
 import com.autorizador.pocket.model.Card;
 import com.autorizador.pocket.repository.CardRepository;
 import com.autorizador.pocket.request.CardRequest;
 import com.autorizador.pocket.response.CardResponse;
+import com.autorizador.pocket.service.validator.BalanceValidator;
+import com.autorizador.pocket.service.validator.CardExistValidator;
+import com.autorizador.pocket.service.validator.CardTransactionValidator;
+import com.autorizador.pocket.service.validator.PasswordValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +27,8 @@ public class CardService {
     private final CardRepository repository;
     private final CardMapper mapper;
 
+    private final CardTransactionValidator transactionValidator = new CardExistValidator();
+
     public ResponseEntity<CardResponse> create(CardRequest request) {
         return repository.findByCardNumber(request.getCardNumber())
             .map(card -> ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(mapper.modelToResponse(card)))
@@ -33,9 +41,9 @@ public class CardService {
             .orElseThrow(CardNotFoundException::new);
     }
 
-    public void authorizeCardTransaction(String cardNumber, String password, BigDecimal value){
-        repository.findByCardNumber(cardNumber)
-            .orElseThrow(() ->)
+    public boolean authorizeCardTransaction(String cardNumber, String password, BigDecimal value){
+        transactionValidator.setNext(new PasswordValidator()).setNext(new BalanceValidator(repository));
+        return transactionValidator.validate(repository.findByCardNumber(cardNumber), password, value);
     }
 
     public List<CardResponse> getAllCards() {

@@ -1,6 +1,7 @@
 package com.autorizador.pocket.service;
 
 import com.autorizador.pocket.exception.CardNotFoundException;
+import com.autorizador.pocket.exception.CardTransactionException;
 import com.autorizador.pocket.mapper.CardMapper;
 import com.autorizador.pocket.model.Card;
 import com.autorizador.pocket.repository.CardRepository;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import static com.autorizador.pocket.mock.MockCard.mockRequest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -77,13 +79,43 @@ class CardServiceTest {
         assertThrows(CardNotFoundException.class, () -> service.getCardBalance("1234567890"));
     }
 
-    private CardRequest mockRequest(){
-        return CardRequest.builder()
-            .cardNumber("1234567890")
-            .cpf("78931227899")
-            .password("1234")
-            .name("Meryl Streep")
-            .build();
+    @Test
+    @DisplayName("Should authorize card transaction")
+    void shouldAuthorizeCardTransaction() {
+        var card = mockCardModel();
+        when(repository.findByCardNumber(anyString())).thenReturn(Optional.of(card));
+
+        boolean isCardTransactionAuthorized = service.authorizeCardTransaction("1234567890",
+            "1234", BigDecimal.valueOf(100.00));
+
+        assertTrue(isCardTransactionAuthorized);
+    }
+
+    @Test
+    @DisplayName("Should not authorize card transaction for a card not found")
+    void shouldNotAuthorizeCardTransactionCardNotFound() {
+        when(repository.findByCardNumber(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(CardTransactionException.class, () -> service.authorizeCardTransaction("1234567890",
+            "1234", BigDecimal.valueOf(100.00)));
+    }
+
+    @Test
+    @DisplayName("Should not authorize card transaction for invalid password")
+    void shouldNotAuthorizeCardTransactionInvalidPassword() {
+        when(repository.findByCardNumber(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(CardTransactionException.class, () -> service.authorizeCardTransaction("1234567890",
+            "123456", BigDecimal.valueOf(100.00)));
+    }
+
+    @Test
+    @DisplayName("Should not authorize card transaction for insufficient balance")
+    void shouldNotAuthorizeCardTransactionInsufficientBalance() {
+        when(repository.findByCardNumber(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(CardTransactionException.class, () -> service.authorizeCardTransaction("1234567890",
+            "123456", BigDecimal.valueOf(1000.00)));
     }
 
     private Card mockCardModel(){

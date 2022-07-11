@@ -1,20 +1,11 @@
 package com.autorizador.pocket.controller;
 
-import com.autorizador.pocket.exception.CardTransactionException;
 import com.autorizador.pocket.request.CardBalanceRequest;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 
@@ -25,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureDataMongo
 @SpringBootTest
-class CardTransactionControllerTest extends BaseControllerTest{
+class CardTransactionControllerIT extends BaseControllerTest{
 
     @AfterEach
     private void afterEach() {

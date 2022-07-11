@@ -28,9 +28,6 @@ public abstract class CardTransactionValidator {
      * last object in chain.
      */
     protected boolean checkNext(Optional<Card> card, String password, BigDecimal value) {
-//        if (next == null) {
-//            return true;
-//        }
         return next.validate(card, password, value);
     }
 }

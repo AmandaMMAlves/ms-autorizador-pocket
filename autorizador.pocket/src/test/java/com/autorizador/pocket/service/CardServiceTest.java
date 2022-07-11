@@ -84,6 +84,7 @@ class CardServiceTest {
     void shouldAuthorizeCardTransaction() {
         var card = mockCardModel();
         when(repository.findByCardNumber(anyString())).thenReturn(Optional.of(card));
+        when(repository.save(any())).thenReturn(card);
 
         boolean isCardTransactionAuthorized = service.authorizeCardTransaction("1234567890",
             "1234", BigDecimal.valueOf(100.00));

@@ -8,6 +8,11 @@ import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+
+/**
+ * Classe resposável pela verificação e débito do saldo no cartão
+ * @author Amanda Mayara
+ */
 @RequiredArgsConstructor
 public class BalanceValidator extends CardTransactionValidator {
     private final CardRepository repository;

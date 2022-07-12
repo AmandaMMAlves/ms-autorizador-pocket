@@ -7,6 +7,10 @@ import com.autorizador.pocket.model.Card;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+/**
+ * Classe resposável pela validação da senha
+ * @author Amanda Mayara
+ */
 public class PasswordValidator extends CardTransactionValidator{
     @Override
     public boolean validate(Optional<Card> card, String password, BigDecimal value) {

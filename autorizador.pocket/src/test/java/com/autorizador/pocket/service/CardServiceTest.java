@@ -6,7 +6,6 @@ import com.autorizador.pocket.exception.CardTransactionException;
 import com.autorizador.pocket.mapper.CardMapper;
 import com.autorizador.pocket.model.Card;
 import com.autorizador.pocket.repository.CardRepository;
-import com.autorizador.pocket.request.CardRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package com.autorizador.pocket.controller;
 
-import com.autorizador.pocket.request.CardBalanceRequest;
+import com.autorizador.pocket.http.request.CardBalanceRequest;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

@@ -1,6 +1,6 @@
 package com.autorizador.pocket.mock;
 
-import com.autorizador.pocket.request.CardRequest;
+import com.autorizador.pocket.http.request.CardRequest;
 
 public class MockCard {
 

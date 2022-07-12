@@ -2,26 +2,25 @@ package com.autorizador.pocket.service;
 
 import com.autorizador.pocket.exception.CardAlreadyCreatedException;
 import com.autorizador.pocket.exception.CardNotFoundException;
-import com.autorizador.pocket.exception.CardTransactionException;
-import com.autorizador.pocket.exception.CardTransactionValidatorEnum;
 import com.autorizador.pocket.mapper.CardMapper;
 import com.autorizador.pocket.model.Card;
 import com.autorizador.pocket.repository.CardRepository;
-import com.autorizador.pocket.request.CardRequest;
-import com.autorizador.pocket.response.CardResponse;
+import com.autorizador.pocket.http.request.CardRequest;
+import com.autorizador.pocket.http.response.CardResponse;
 import com.autorizador.pocket.service.validator.BalanceValidator;
 import com.autorizador.pocket.service.validator.CardExistValidator;
 import com.autorizador.pocket.service.validator.CardTransactionValidator;
 import com.autorizador.pocket.service.validator.PasswordValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * Service responsável pelo tráfego dos cartões
+ * @author Amanda Mayara
+ */
 @Service
 @RequiredArgsConstructor
 public class CardService {

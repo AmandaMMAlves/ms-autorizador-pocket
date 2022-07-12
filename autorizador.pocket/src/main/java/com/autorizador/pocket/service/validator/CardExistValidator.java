@@ -9,6 +9,10 @@ import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+/**
+ * Classe resposável pela validação da existencia do cartao
+ * @author Amanda Mayara
+ */
 public class CardExistValidator extends CardTransactionValidator{
     @Override
     public boolean validate(Optional<Card> card, String password, BigDecimal value) {

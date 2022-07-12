@@ -1,11 +1,9 @@
 package com.autorizador.pocket.mapper;
 
 import com.autorizador.pocket.model.Card;
-import com.autorizador.pocket.request.CardRequest;
-import com.autorizador.pocket.response.CardResponse;
-import org.mapstruct.InjectionStrategy;
+import com.autorizador.pocket.http.request.CardRequest;
+import com.autorizador.pocket.http.response.CardResponse;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CardMapper {

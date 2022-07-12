@@ -1,4 +1,4 @@
-package com.autorizador.pocket.request;
+package com.autorizador.pocket.http.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

@@ -37,19 +37,4 @@ public class CardController {
     public BigDecimal getCardBalance(@PathVariable("numeroCartao") String cardNumber) {
         return service.getCardBalance(cardNumber);
     }
-
-    @GetMapping
-    public List<CardResponse> getCards() {
-        return service.getAllCards();
-    }
-
-    @DeleteMapping
-    public void deleteCard(@RequestBody CardRequest cardRequest) {
-        service.deleteCard(cardRequest);
-    }
-
-    @DeleteMapping("/all")
-    public void deleteAllCards() {
-        service.deleteAllCards();
-    }
 }

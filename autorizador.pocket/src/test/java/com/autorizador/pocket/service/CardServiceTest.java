@@ -1,5 +1,6 @@
 package com.autorizador.pocket.service;
 
+import com.autorizador.pocket.exception.CardAlreadyCreatedException;
 import com.autorizador.pocket.exception.CardNotFoundException;
 import com.autorizador.pocket.exception.CardTransactionException;
 import com.autorizador.pocket.mapper.CardMapper;
@@ -36,28 +37,24 @@ class CardServiceTest {
     private CardService service;
 
     @Test
-    @DisplayName("Should create new card and return 201 status")
+    @DisplayName("Should create new card")
     void shouldCreateNewCard() {
         var request = mockRequest();
         when(repository.findByCardNumber(anyString())).thenReturn(Optional.empty());
 
-        var cardResponseResponseEntity = service.create(request);
+        var cardResponseResponseEntity = service.create(mapper.requestToModel(request));
 
         verify(repository, times(1)).save(any());
-        assertEquals(cardResponseResponseEntity.getStatusCode(), HttpStatus.CREATED);
     }
 
     @Test
-    @DisplayName("Should not create new card and return 422 status")
+    @DisplayName("Should not create new card")
     void shouldNotCreateNewCard() {
         var request = mockRequest();
         var card = new Card();
         when(repository.findByCardNumber(anyString())).thenReturn(Optional.of(card));
 
-        var cardResponseResponseEntity = service.create(request);
-
-        verify(repository, never()).save(any());
-        assertEquals(cardResponseResponseEntity.getStatusCode(), HttpStatus.UNPROCESSABLE_ENTITY);
+        assertThrows(CardAlreadyCreatedException.class, () -> service.create(mapper.requestToModel(request)));
     }
 
     @Test

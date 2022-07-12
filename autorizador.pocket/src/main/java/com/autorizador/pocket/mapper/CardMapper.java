@@ -12,4 +12,6 @@ public interface CardMapper {
 
     Card requestToModel(CardRequest request);
     CardResponse modelToResponse(Card model);
+
+    CardResponse requestToResponse(CardRequest request);
 }

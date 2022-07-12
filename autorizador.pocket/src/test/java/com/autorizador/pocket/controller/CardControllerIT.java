@@ -28,7 +28,7 @@ class CardControllerIT extends BaseControllerTest {
 
     @Test
     @DisplayName("Should create a new card")
-    void createCardWithSucces() throws Exception {
+    void createCardWithSuccess() throws Exception {
         var request = mockRequest();
 
         this.mockMvc.perform(post("/cartoes/")

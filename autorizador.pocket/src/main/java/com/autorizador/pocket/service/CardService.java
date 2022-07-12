@@ -1,5 +1,6 @@
 package com.autorizador.pocket.service;
 
+import com.autorizador.pocket.exception.CardAlreadyCreatedException;
 import com.autorizador.pocket.exception.CardNotFoundException;
 import com.autorizador.pocket.exception.CardTransactionException;
 import com.autorizador.pocket.exception.CardTransactionValidatorEnum;
@@ -29,11 +30,12 @@ public class CardService {
 
     private final CardTransactionValidator transactionValidator = new CardExistValidator();
 
-    public ResponseEntity<CardResponse> create(CardRequest request) {
-        return repository.findByCardNumber(request.getCardNumber())
-            .map(card -> ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(mapper.modelToResponse(card)))
-            .orElseGet(() -> ResponseEntity.status(HttpStatus.CREATED).body(initCard(request)));
+    public Card create(Card card) {
+        return repository.findByCardNumber(card.getCardNumber())
+            .filter(c -> {throw new CardAlreadyCreatedException();})
+            .orElseGet(() -> initCard(card));
     }
+
 
     public BigDecimal getCardBalance(String cardNumber){
         return repository.findByCardNumber(cardNumber)
@@ -64,5 +66,10 @@ public class CardService {
         Card newCard = mapper.requestToModel(request);
         newCard.setBalance(BigDecimal.valueOf(500L));
         return mapper.modelToResponse(repository.save(newCard));
+    }
+
+    private Card initCard(Card newCard) {
+        newCard.setBalance(BigDecimal.valueOf(500L));
+        return repository.save(newCard);
     }
 }
